@@ -1,3 +1,46 @@
+// mobile menu
+const navToggle = document.getElementById("nav-toggle");
+const navMenu = document.getElementById("nav-menu");
+if (navToggle && navMenu) {
+  const setOpen = (open) => {
+    navMenu.classList.toggle("open", open);
+    navToggle.setAttribute("aria-expanded", String(open));
+    navToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+  navToggle.addEventListener("click", () => setOpen(!navMenu.classList.contains("open")));
+  navMenu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+}
+
+// scroll-spy: highlight the nav link for the section in view
+const navLinks = navMenu ? [...navMenu.querySelectorAll('a[href^="#"]')] : [];
+const sectionFor = (id) => navLinks.find((a) => a.getAttribute("href") === "#" + id);
+if (navLinks.length) {
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        navLinks.forEach((a) => a.classList.remove("active"));
+        const link = sectionFor(en.target.id);
+        if (link) link.classList.add("active");
+      });
+    },
+    { rootMargin: "-45% 0px -50% 0px" }
+  );
+  ["vans", "sell", "reviews", "faq", "about", "contact"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) spy.observe(el);
+  });
+}
+
+// back to top
+const toTop = document.getElementById("to-top");
+if (toTop) {
+  const onScroll = () => (toTop.hidden = window.scrollY < 600);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+}
+
 // scroll reveals
 const io = new IntersectionObserver(
   (entries) => entries.forEach((en) => en.isIntersecting && (en.target.classList.add("in"), io.unobserve(en.target))),
@@ -82,6 +125,20 @@ modal.querySelector(".modal-close").addEventListener("click", () => modal.close(
 modal.addEventListener("click", (e) => {
   const r = modal.getBoundingClientRect();
   if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) modal.close();
+});
+
+// forms — preview only: no backend yet, so confirm inline instead of submitting
+document.querySelectorAll("form.tl-form").forEach((form) => {
+  const status = form.querySelector(".form-status");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const name = form.elements.name ? form.elements.name.value.trim() : "";
+    status.hidden = false;
+    status.textContent = `Thanks${name ? ", " + name : ""}! This is a preview, so nothing was sent — once live it'll go straight to Mike. For now, call or WhatsApp 07813 696011.`;
+    form.reset();
+    status.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
 });
 
 // toggle the hidden sold grid (its cards are already in the DOM, so their click
