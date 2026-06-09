@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Scrape inventory from trade-leisure.co.uk into data/vans.json + downloaded photos."""
+import html as html_lib
 import json
 import os
 import re
@@ -45,6 +46,9 @@ def parse_listing(url, html):
         r'<td class="t-label">([^<]+)</td>.*?<td class="t-value[^"]*">([^<]+)</td>', html, re.S
     ):
         specs[label.strip()] = value.strip()
+
+    bullets, extra = parse_description(html)
+
     imgs = re.findall(r'https://trade-leisure\.co\.uk/wp-content/uploads/[^"\'\s)]+?-798x466\.(?:jpe?g|png|webp)', html)
     uniq = []
     for i in imgs:
@@ -55,9 +59,31 @@ def parse_listing(url, html):
         "url": url,
         "title": title,
         "summary": desc,
+        "bullets": bullets,
+        "notes": extra,
         "specs": specs,
         "image_urls": uniq[:MAX_PHOTOS],
     }
+
+
+def clean_text(raw):
+    txt = re.sub(r"<[^>]+>", "", raw)
+    txt = html_lib.unescape(txt)
+    return re.sub(r"\s+", " ", txt).strip()
+
+
+def parse_description(html):
+    """Pull the full write-up from <div class="post-content">: <li> bullets + trailing notes."""
+    m = re.search(r'<div class="post-content">(.*?)</div>', html, re.S)
+    if not m:
+        return [], ""
+    block = m.group(1)
+    bullets = [clean_text(li) for li in re.findall(r"<li[^>]*>(.*?)</li>", block, re.S)]
+    bullets = [b for b in bullets if b]
+    # trailing text after the </ul> (non-bullet sentences)
+    tail = re.sub(r".*</ul>", "", block, flags=re.S)
+    notes = clean_text(tail)
+    return bullets, notes
 
 
 def main():

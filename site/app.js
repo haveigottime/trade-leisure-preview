@@ -1,6 +1,6 @@
 // scroll reveals
 const io = new IntersectionObserver(
-  (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))),
+  (entries) => entries.forEach((en) => en.isIntersecting && (en.target.classList.add("in"), io.unobserve(en.target))),
   { threshold: 0.12 }
 );
 document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
@@ -9,14 +9,18 @@ document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 const modal = document.getElementById("van-modal");
 const gallery = modal.querySelector(".modal-gallery");
 const titleEl = modal.querySelector("h3");
-const summaryEl = modal.querySelector(".summary");
+const refEl = modal.querySelector(".modal-ref");
+const bulletsEl = modal.querySelector(".modal-bullets");
+const notesEl = modal.querySelector(".modal-notes");
 const specsEl = modal.querySelector(".modal-specs");
 
 document.querySelectorAll(".van-card").forEach((card) => {
   card.addEventListener("click", () => {
     const van = JSON.parse(card.dataset.van);
     titleEl.textContent = van.title;
-    summaryEl.textContent = van.summary;
+    refEl.textContent = van.code || "";
+    notesEl.textContent = van.notes || "";
+    notesEl.style.display = van.notes ? "" : "none";
 
     gallery.replaceChildren(
       ...van.photos.map((p, i) => {
@@ -28,12 +32,22 @@ document.querySelectorAll(".van-card").forEach((card) => {
       })
     );
 
+    bulletsEl.replaceChildren(
+      ...(van.bullets || []).map((b) => {
+        const li = document.createElement("li");
+        li.textContent = b;
+        return li;
+      })
+    );
+
     specsEl.replaceChildren(
       ...Object.entries(van.specs).map(([k, v]) => {
         const cell = document.createElement("div");
         const label = document.createElement("b");
         label.textContent = k;
-        cell.append(label, document.createTextNode(v));
+        const val = document.createElement("span");
+        val.textContent = v;
+        cell.append(label, val);
         return cell;
       })
     );
