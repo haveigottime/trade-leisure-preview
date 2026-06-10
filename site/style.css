@@ -260,7 +260,8 @@ section[id], main > div[id] { scroll-margin-top: 84px; }
   .hero .route { display: none; }
   .viewfinder { max-width: 100%; padding: 12px; display: block; }
   .viewfinder .frame { display: block; }
-  .viewfinder .frame img { aspect-ratio: 16 / 10; min-height: 0; height: auto; object-position: center; }
+  /* show the whole photo, no cropping, on phones */
+  .viewfinder .frame img { width: 100%; height: auto; min-height: 0; aspect-ratio: auto; object-fit: contain; }
   .compass, .logo-badge { width: 84px; height: 84px; top: -6px; right: -6px; }
 }
 
