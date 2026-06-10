@@ -200,12 +200,17 @@ ld = {
 def hero_view():
     van = next((v for v in VANS if v["slug"] == "volkswagen-california-se-ocean-campervan"), VANS[0])
     s = van["specs"]
-    # front 3/4 shot with the pop-top up — the van fills the frame, so it crops well
-    hero_img = "photos/volkswagen-california-se-ocean-campervan/02.jpg"
+    # Desktop: front 3/4 shot fills the tall frame. Mobile: wide lifestyle shot
+    # (pop-top up, awning out) shown full so you see the whole van, not a crop.
+    hero_desktop = "photos/volkswagen-california-se-ocean-campervan/02.jpg"
+    hero_mobile = "photos/volkswagen-california-se-ocean-campervan/01.jpg"
     return f"""
       <div class="viewfinder reveal in">
         <div class="frame">
-          <img src="{hero_img}" alt="Volkswagen California campervan with pop-top roof raised">
+          <picture>
+            <source media="(max-width: 920px)" srcset="{hero_mobile}">
+            <img src="{hero_desktop}" alt="Volkswagen California campervan with pop-top roof raised and awning out">
+          </picture>
           <span class="corner c-tl"></span><span class="corner c-tr"></span>
           <span class="corner c-bl"></span><span class="corner c-br"></span>
           <span class="tag"><b>▸</b> {e(s.get('Make',''))} {e(s.get('Model',''))} · {e(s.get('Year',''))}</span>
