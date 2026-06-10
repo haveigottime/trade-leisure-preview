@@ -262,6 +262,8 @@ section[id], main > div[id] { scroll-margin-top: 84px; }
   .viewfinder .frame { display: block; }
   /* show the whole photo, no cropping, on phones */
   .viewfinder .frame img { width: 100%; height: auto; min-height: 0; aspect-ratio: auto; object-fit: contain; }
+  /* caption sits below the photo, not over the van */
+  .viewfinder .tag { position: static; display: block; width: 100%; border-radius: 0; padding: 11px 14px; font-size: 11.5px; }
   .compass, .logo-badge { width: 84px; height: 84px; top: -6px; right: -6px; }
 }
 
