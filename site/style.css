@@ -251,8 +251,15 @@ section[id], main > div[id] { scroll-margin-top: 84px; }
 .compass { position: absolute; top: -6px; right: -6px; width: 96px; height: 96px; filter: drop-shadow(0 8px 16px rgba(18,42,34,.3)); }
 
 @media (max-width: 920px) {
-  .hero .wrap { grid-template-columns: 1fr; gap: 36px; padding-top: 48px; }
-  .viewfinder { max-width: 520px; }
+  .hero .wrap { grid-template-columns: 1fr; gap: 24px; padding: 36px 28px 52px; }
+  .hero h1 { margin: 14px 0; }
+  .hero .lede { margin-bottom: 22px; }
+  .hero .cta-row { margin-bottom: 0; flex-direction: column; align-items: stretch; }
+  .hero .cta-row .btn { justify-content: center; }
+  .hero .route { display: none; }
+  .viewfinder { max-width: 100%; padding: 12px; }
+  .viewfinder .frame img { min-height: 340px; }
+  .compass, .logo-badge { width: 84px; height: 84px; top: -6px; right: -6px; }
 }
 
 /* ---------- field-notes / trust ---------- */
